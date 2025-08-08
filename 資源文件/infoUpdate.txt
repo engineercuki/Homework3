@@ -1,0 +1,56 @@
+//*************功能區************
+		BookSchduleDaoImpl bdi=new BookSchduleDaoImpl();
+		Patient name=(Patient)Tool.readFile("member.txt");
+		String show=name.getPatientName()+" 的會員資料";
+		userMsg.setText(show);
+		
+		JButton goTo = new JButton("返回");
+		goTo.setForeground(new Color(255, 0, 0));
+		goTo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				HomePage home=new HomePage();
+				home.setVisible(true);
+				dispose();
+			}
+		});
+		goTo.setFont(new Font("新細明體", Font.PLAIN, 24));
+		goTo.setBounds(220, 645, 165, 44);
+		contentPane.add(goTo);
+		
+		JButton check = new JButton("查詢");
+		check.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Patient pid = (Patient) Tool.readFile("member.txt"); 
+				PatientServiceImpl service = new PatientServiceImpl();
+				Patient p = service.findPatientInfo(pid.getPatientId()); 
+				String showInfo = Tool.formatPatientInfo(p);
+				info.setText(showInfo);
+			}
+		});
+		check.setFont(new Font("新細明體", Font.PLAIN, 24));
+		check.setBounds(426, 645, 165, 44);
+		contentPane.add(check);
+		
+		JButton submit = new JButton("確認修改");
+		submit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// 取得 patientId
+		        Patient pid= (Patient) Tool.readFile("member.txt");
+		        String patientId = pid.getPatientId();
+		        // 呼叫更新方法
+		        PatientServiceImpl service = new PatientServiceImpl();
+		        boolean success = service.update(patientId, password.getText());
+		        info.setText("密碼已更新，清點選[查詢]確認！");
+			}
+		});
+		submit.setForeground(new Color(0, 0, 255));
+		submit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		submit.setBounds(626, 645, 165, 44);
+		contentPane.add(submit);
+
+	}
+
+}

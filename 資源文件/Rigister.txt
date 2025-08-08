@@ -1,0 +1,161 @@
+		//*********************功能區********************
+
+		JComboBox<String> bdYear = new JComboBox<>();
+		bdYear.setFont(new Font("新細明體", Font.PLAIN, 24));
+		bdYear.setBounds(623, 292, 87, 32);
+		// 初始化年份（今年往前100年）
+		bdYear.addItem(""); // 空白選項加在最前面
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 0; i < 100; i++) {
+        	bdYear.addItem(String.valueOf(currentYear - i));
+        }
+		contentPane.add(bdYear);
+		
+		JComboBox<String> bdMonth = new JComboBox<>();
+		bdMonth.setFont(new Font("新細明體", Font.PLAIN, 24));
+		bdMonth.setBounds(744, 292, 87, 32);
+		// 初始化月份（1~12）
+		bdMonth.addItem(""); // 空白選項加在最前面
+        for (int i = 1; i <= 12; i++) {
+        	bdMonth.addItem(String.valueOf(i));
+        }
+		contentPane.add(bdMonth);
+		
+		JComboBox<String> bdDay = new JComboBox<>();
+		bdDay.setFont(new Font("新細明體", Font.PLAIN, 24));
+		bdDay.setBounds(864, 292, 87, 32);
+		contentPane.add(bdDay);	
+		// 更新日期選項的方法
+		Runnable updateDays = () -> {
+		    bdDay.removeAllItems(); // 清空舊的選項
+			bdDay.addItem(""); // 空白選項加在最前面
+		    String yearStr = (String) bdYear.getSelectedItem();
+		    String monthStr = (String) bdMonth.getSelectedItem();
+            if (yearStr != null && monthStr != null && !yearStr.isEmpty() && !monthStr.isEmpty()) {
+                try {
+                    int year = Integer.parseInt(yearStr);
+                    int month = Integer.parseInt(monthStr);
+                    int daysInMonth = YearMonth.of(year, month).lengthOfMonth();
+                    for (int i = 1; i <= daysInMonth; i++) {
+                        bdDay.addItem(String.valueOf(i));
+                    }
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace(); // 防止非數字選項造成錯誤
+                }
+            }
+        };
+		// 加入事件監聽
+        bdYear.addActionListener(e -> updateDays.run());
+        bdMonth.addActionListener(e -> updateDays.run());
+        // 預設選擇第一個選項並更新日期
+        bdYear.setSelectedIndex(0);
+        bdMonth.setSelectedIndex(0);
+        updateDays.run();
+ 
+		JLabel Age = new JLabel("");
+		Age.setHorizontalAlignment(SwingConstants.LEFT);
+		Age.setFont(new Font("標楷體", Font.PLAIN, 24));
+		// 計算年齡的方法
+		Runnable updateAge = () -> {
+			 String yearStr = (String) bdYear.getSelectedItem();
+			    String monthStr = (String) bdMonth.getSelectedItem();
+			    String dayStr = (String) bdDay.getSelectedItem();
+			    if (yearStr != null && monthStr != null && dayStr != null &&
+			            !yearStr.isEmpty() && !monthStr.isEmpty() && !dayStr.isEmpty()){
+			    	int year = Integer.parseInt(yearStr);
+		            int month = Integer.parseInt(monthStr);
+		            int day = Integer.parseInt(dayStr);
+
+		            LocalDate birthDate = LocalDate.of(year, month, day);
+		            LocalDate today = LocalDate.now();
+		            Period age = Period.between(birthDate, today);
+		            Age.setText(String.valueOf(age.getYears()));
+		    } else {
+		        Age.setText(""); // 防止無效日期
+		    }
+		};
+		// 加入事件監聽
+		bdYear.addActionListener(e -> {
+		    updateDays.run();
+		    updateAge.run();
+		});
+		bdMonth.addActionListener(e -> {
+		    updateDays.run();
+		    updateAge.run();
+		});
+		bdDay.addActionListener(e -> updateAge.run());
+		// 預設選擇第一個選項並更新日期與年齡
+		bdYear.setSelectedIndex(0);
+		bdMonth.setSelectedIndex(0);
+		updateDays.run();
+		updateAge.run();
+		Age.setBounds(623, 392, 135, 35);
+		contentPane.add(Age);
+		
+		String[] options = {"","男", "女"};
+		JComboBox<String> sex = new JComboBox<>(options);
+		sex.setFont(new Font("新細明體", Font.PLAIN, 24));
+		sex.setBounds(623, 481, 87, 32);
+		contentPane.add(sex);
+		
+		JButton submit = new JButton("註冊");
+		submit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String Name=name.getText();
+				String Pid=pid.getText();
+				String Password=password.getText();
+				String Sex=(String)sex.getSelectedItem();
+				String Phone=phone.getText();
+				
+				//檢查欄位是否為空值
+				if (name.getText() != null && pid.getText() !=null && password.getText() !=null && phone.getText() != null && 
+						(String) sex.getSelectedItem() != null && !((String) sex.getSelectedItem()).isEmpty() &&
+						(String) bdYear.getSelectedItem() != null && !((String) bdYear.getSelectedItem()).isEmpty() &&
+						(String) bdMonth.getSelectedItem() != null && !((String) bdMonth.getSelectedItem()).isEmpty() &&
+						(String) bdDay.getSelectedItem() != null && !((String) bdDay.getSelectedItem()).isEmpty()) {
+
+							String Birthday=(String)bdYear.getSelectedItem()+"/"+bdMonth.getSelectedItem()+"/"+bdDay.getSelectedItem();
+							Patient p=new Patient(Name,Pid,Sex,Birthday,Phone,Password);
+				
+							boolean result=new PatientServiceImpl().addCheck(p);
+
+							if (result) {
+								rigisterMsg.setText("註冊成功！");
+								name.setText("");
+								pid.setText("");
+								password.setText("");
+								phone.setText("");
+								sex.setSelectedItem("");
+								bdYear.setSelectedItem("");
+								bdMonth.setSelectedItem("");
+								bdDay.setSelectedItem("");
+			        
+							} else {
+								rigisterMsg.setText("帳號已存在，請返回[登入]");
+							}}
+				else {
+						rigisterMsg.setText("欄位不可空白!");
+				}}
+		});
+		submit.setForeground(new Color(0, 0, 255));
+		submit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		submit.setBounds(629, 619, 191, 42);
+		contentPane.add(submit);
+		
+		JButton back = new JButton("返回登入");
+		back.setForeground(new Color(255, 0, 0));
+		back.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Login login=new Login();
+				login.setVisible(true);
+				dispose();
+			}
+		});
+		back.setFont(new Font("新細明體", Font.PLAIN, 24));
+		back.setBounds(92, 619, 191, 42);
+		contentPane.add(back);
+	
+	}
+}

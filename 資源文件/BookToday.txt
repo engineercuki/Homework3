@@ -1,0 +1,149 @@
+//******************功能區*******************
+		
+		BookSchduleDaoImpl bdi=new BookSchduleDaoImpl();
+		Patient name=(Patient)Tool.readFile("member.txt");
+		String show=name.getPatientName()+"，歡迎您! 請選擇今日掛號資訊";
+		loginMsg.setText(show);
+
+		
+		String[] deptOptions = {"","內診", "針灸","復健"};
+		JComboBox<String> dept = new JComboBox(deptOptions);
+		dept.setFont(new Font("新細明體", Font.PLAIN, 24));
+		dept.setBounds(257, 287, 151, 33);
+		contentPane.add(dept);
+		
+		String[] doctorsA = {"","鄭芳行", "吳所畏", "陳佳嘉"};
+		String[] doctorsB = {"","王權一", "郝湯洲"};
+		String[] doctorsC = {"","劉安", "陳訴利"};
+		JComboBox doctor = new JComboBox();
+		doctor.setFont(new Font("新細明體", Font.PLAIN, 24));
+		// 加入監聽器，根據 department 的選擇更新 doctor 的選項
+		dept.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String selectedDept = (String) dept.getSelectedItem();
+		        doctor.removeAllItems(); // 清空原有選項
+
+		        switch (selectedDept) {
+		            case "內診":
+		                for (String doc : doctorsA) doctor.addItem(doc);
+		                break;
+		            case "針灸":
+		                for (String doc : doctorsB) doctor.addItem(doc);
+		                break;
+		            case "復健":
+		                for (String doc : doctorsC) doctor.addItem(doc);
+		                break;
+		        }
+		    }
+		});
+		doctor.setBounds(257, 380, 151, 33);
+		contentPane.add(doctor);
+		
+		// 建立日期格式化器
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/M/d");
+		// 取得今天日期並轉成String
+		String today = LocalDate.now().format(formatter);
+		JLabel date = new JLabel(today);
+		date.setHorizontalAlignment(SwingConstants.LEFT);
+		date.setFont(new Font("新細明體", Font.PLAIN, 24));
+		date.setBounds(653, 287, 338, 33);
+		contentPane.add(date);
+	
+		String[] durOptions = {"","上午診", "下午診","晚診"};
+		JComboBox<String> duration = new JComboBox(durOptions);
+		duration.setFont(new Font("新細明體", Font.PLAIN, 24));
+		duration.setBounds(646, 380, 151, 33);
+		contentPane.add(duration);
+		
+		String[] timeA = {"","9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00", "10:10", "10:20", "10:30", "10:40", "10:50", "11:00", "11:10", "11:20", "11:30", "11:40", "11:50"};
+		String[] timeB = {"","14:00", "14:10", "14:20", "14:30", "14:40", "14:50", "15:00", "15:10", "15:20", "15:30", "15:40", "15:50", "16:00", "16:10", "16:20", "16:30", "16:40", "16:50"};
+		String[] timeC = {"","18:00", "18:10", "18:20", "18:30", "18:40", "18:50", "19:00", "19:10", "19:20", "19:30", "19:40", "19:50", "20:00", "20:10", "20:20", "20:30", "20:40", "20:50"};
+		JComboBox time = new JComboBox();
+		time.setFont(new Font("新細明體", Font.PLAIN, 24));
+		// 加入監聽器，根據 department 的選擇更新 doctor 的選項
+					duration.addActionListener(new ActionListener() {
+				    @Override
+				    public void actionPerformed(ActionEvent e) {
+				        String selectedTime = (String) duration.getSelectedItem();
+				        time.removeAllItems(); // 清空原有選項
+
+				        switch (selectedTime) {
+				            case "上午診":
+				                for (String doc : timeA) time.addItem(doc);
+				                break;
+				            case "下午診":
+				                for (String doc : timeB) time.addItem(doc);
+				                break;
+				            case "晚診":
+				                for (String doc :timeC) time.addItem(doc);
+				                break;
+				        }
+				    }
+				});
+		time.setBounds(646, 476, 151, 33);
+		contentPane.add(time);
+		
+	
+		JButton submit = new JButton("確認掛號");
+		submit.setForeground(new Color(0, 0, 255));
+		submit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				BookSchdule booking = new BookSchdule();
+					if((String) time.getSelectedItem() != null && !((String) time.getSelectedItem()).isEmpty() && (String) doctor.getSelectedItem() != null && (String) doctor.getSelectedItem() != null && !((String) doctor.getSelectedItem()).isEmpty() && !((String) dept.getSelectedItem()).isEmpty()) {
+						booking.setPatientName(name.getPatientName());
+						booking.setPatientId(name.getPatientId());
+						booking.setBookDate((String)date.getText());
+						booking.setBookTime((String)time.getSelectedItem());
+						booking.setDoctorName((String)doctor.getSelectedItem());
+						booking.setDepartment((String)dept.getSelectedItem());				
+						bdi.add(booking);
+						
+						bookingMsg.setText("預約完成!");
+						time.setSelectedItem("");
+						dept.setSelectedItem("");
+						doctor.setSelectedItem("");
+						duration.setSelectedItem("");
+					}
+					else {
+						bookingMsg.setText("欄位不可空白!");
+					}				
+			}
+		});
+		submit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		submit.setBounds(737, 615, 216, 49);
+		contentPane.add(submit);
+		
+		JButton goBack = new JButton("返回");
+		goBack.setForeground(new Color(255, 0, 0));
+		goBack.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				HomePage back=new HomePage();
+				back.setVisible(true);
+				dispose();
+			}
+		});
+		goBack.setFont(new Font("新細明體", Font.PLAIN, 24));
+		goBack.setBounds(151, 615, 216, 49);
+		contentPane.add(goBack);
+		
+		JButton goAfterToday = new JButton("預約其他日期");
+		goAfterToday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				BookAfterToday goAT=new BookAfterToday();
+				goAT.setVisible(true);
+				dispose();
+			}
+		});
+		goAfterToday.setFont(new Font("新細明體", Font.PLAIN, 24));
+		goAfterToday.setBounds(440, 615, 216, 49);
+		contentPane.add(goAfterToday);
+
+		
+	}
+
+}

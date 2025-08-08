@@ -1,0 +1,72 @@
+//*****************功能區******************
+		
+		Patient p=(Patient)Tool.readFile("member.txt");
+		String show=p.getPatientName()+"，歡迎您! 請選擇需要的服務";
+		loginMsg.setText(show);
+		
+		JButton bookingNow = new JButton("現場掛號(當日)");
+		bookingNow.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				BookToday goToday=new BookToday();
+				goToday.setVisible(true);
+				dispose();
+			}
+		});
+		bookingNow.setFont(new Font("標楷體", Font.PLAIN, 24));
+		bookingNow.setBounds(221, 93, 641, 81);
+		panel_1.add(bookingNow);
+		
+		JButton bookAfterToday = new JButton("預約掛號(非當日)");
+		bookAfterToday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				BookAfterToday goAT=new BookAfterToday();
+				goAT.setVisible(true);
+				dispose();
+			}
+		});
+		bookAfterToday.setFont(new Font("標楷體", Font.PLAIN, 24));
+		bookAfterToday.setBounds(221, 200, 641, 81);
+		panel_1.add(bookAfterToday);
+	
+		JButton goDelect = new JButton("查詢預約或取消(非當日)");
+		goDelect.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				BookedCancel goCancel=new BookedCancel();
+				goCancel.setVisible(true);
+				dispose();
+			}
+		});
+		goDelect.setFont(new Font("標楷體", Font.PLAIN, 24));
+		goDelect.setBounds(221, 318, 641, 81);
+		panel_1.add(goDelect);
+		
+		JButton updateInfo = new JButton("修改個人資料");
+		updateInfo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				InfoUpdate update=new InfoUpdate();
+				update.setVisible(true);
+				dispose();
+			}
+		});
+		updateInfo.setFont(new Font("標楷體", Font.PLAIN, 24));
+		updateInfo.setBounds(221, 425, 641, 81);
+		panel_1.add(updateInfo);
+		
+		JButton exit = new JButton("離開");
+		exit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+			}
+		});
+		exit.setForeground(new Color(255, 0, 0));
+		exit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		exit.setBounds(20, 442, 134, 50);
+		panel_1.add(exit);
+
+	}
+}

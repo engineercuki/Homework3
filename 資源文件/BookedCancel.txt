@@ -1,0 +1,84 @@
+//******************功能區*********************
+		
+		BookSchduleServiceImpl bsi = new BookSchduleServiceImpl();
+
+		Patient name=(Patient)Tool.readFile("member.txt");
+		String show=name.getPatientName()+" 的預約資訊如下";
+		msgBar.setText(show);
+		
+		BookSchduleDaoImpl bdi=new BookSchduleDaoImpl();
+		Patient p=(Patient)Tool.readFile("member.txt");
+		
+		JButton submit = new JButton("確認取消");
+		submit.setForeground(new Color(0, 0, 255));
+		submit.addMouseListener(new MouseAdapter() {
+			@Override
+			 public void mouseClicked(MouseEvent e) {
+		        try {
+		        	int id = Integer.parseInt(deleteId.getText().trim());
+		            bsi.DeleteMySchdule(id);
+		            deleteId.setText("");
+		            bookedInfo.setText("指定資料已刪除，請點選[查詢]重新確認！");
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(null, "請輸入有效的預約序號！");
+		        }
+		    }
+		});
+		submit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		submit.setBounds(299, 623, 187, 47);
+		contentPane.add(submit);
+		
+		JButton print = new JButton("列印預約紀錄");
+		print.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					bookedInfo.print();
+				} catch (Exception pe) {
+					// TODO Auto-generated catch block
+					pe.printStackTrace();
+				}
+			}
+		});
+		print.setFont(new Font("新細明體", Font.PLAIN, 24));
+		print.setBounds(588, 623, 187, 47);
+		contentPane.add(print);
+		
+		JButton excel = new JButton("匯出Excel");
+		excel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		excel.setFont(new Font("新細明體", Font.PLAIN, 24));
+		excel.setBounds(855, 623, 187, 47);
+		contentPane.add(excel);
+		
+		JButton goback = new JButton("返回");
+		goback.setForeground(new Color(255, 0, 0));
+		goback.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				HomePage back=new HomePage();
+				back.setVisible(true);
+				dispose();
+			}
+		});
+		goback.setFont(new Font("新細明體", Font.PLAIN, 24));
+		goback.setBounds(20, 623, 187, 47);
+		contentPane.add(goback);
+		
+		JButton mySchdule = new JButton("查詢");
+		mySchdule.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {				
+				List<BookSchdule> resultList = new BookSchduleServiceImpl().FindMyAllSchdule(p.getPatientId());
+		        bookedInfo.setText(Tool.bookSchduleList(resultList));
+			}
+		});
+		mySchdule.setFont(new Font("新細明體", Font.PLAIN, 24));
+		mySchdule.setBounds(20, 534, 187, 47);
+		contentPane.add(mySchdule);
+
+	}
+}

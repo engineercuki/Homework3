@@ -1,0 +1,99 @@
+//****************功能區******************
+		JLabel ramdomCode= new JLabel("");
+		ramdomCode.setHorizontalAlignment(SwingConstants.CENTER);
+		CheckCode rc = new CheckCode();
+	    ramdomCode.setText(rc.show());
+		ramdomCode.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
+		ramdomCode.setBounds(392, 401, 182, 38);
+		contentPane.add(ramdomCode);
+		
+		JLabel checkImage = new JLabel("");
+		checkImage.setBounds(408, 403, 153, 38);
+	    ImageIcon icon = new ImageIcon(getClass().getResource(rc.getCheckImage()));
+		checkImage.setIcon(icon);
+		checkImage.setHorizontalAlignment(SwingConstants.CENTER);
+		checkImage.setFont(new Font("新細明體", Font.PLAIN, 24));
+		contentPane.add(checkImage);
+		
+		JButton btnNewButton = new JButton("換一張");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				CheckCode rc = new CheckCode();
+			    ramdomCode.setText(rc.show());
+			    ImageIcon icon = new ImageIcon(getClass().getResource(rc.getCheckImage()));
+			    checkImage.setIcon(icon);
+			}
+		});
+		btnNewButton.setFont(new Font("新細明體", Font.PLAIN, 18));
+		btnNewButton.setBounds(560, 405, 110, 36);
+		contentPane.add(btnNewButton);
+		
+		JButton submit = new JButton("登入");
+		submit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+							String Pid=pid.getText();
+							String Password=password.getText();
+							String Check=checkCode.getText();
+							String Ramdom=ramdomCode.getText();
+							
+							if(Check.equals(Ramdom)) {
+							Patient p=new PatientServiceImpl().login(Pid,Password);
+							if(p!=null){
+										
+										//呼叫Tool頁面的儲存資料功能，將登入資料寫入txt暫存
+										Tool.saveFile(p,"member.txt");
+								
+										//跳轉頁面並關閉本頁面
+										HomePage home=new HomePage();
+										home.setVisible(true);
+										dispose();
+							}
+							else {
+										loginMsg.setText("帳號密碼錯誤，請重新輸入!");
+										
+							}}
+							else {
+										loginMsg.setText("驗證碼錯誤，請重新輸入!");
+							}
+				}
+			});
+		submit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		submit.setBounds(406, 575, 220, 36);
+		contentPane.add(submit);
+		
+		JButton register = new JButton("去註冊");
+		register.setForeground(new Color(0, 0, 255));
+		register.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Rigister goRig=new Rigister();
+				goRig.setVisible(true);
+				dispose();
+			}
+		});
+		register.setFont(new Font("新細明體", Font.PLAIN, 24));
+		register.setBounds(760, 575, 220, 36);
+		contentPane.add(register);
+		
+		JButton exit = new JButton("離開");
+		exit.setForeground(new Color(255, 0, 0));
+		exit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+			}
+		});
+		exit.setFont(new Font("新細明體", Font.PLAIN, 24));
+		exit.setBounds(57, 575, 220, 36);
+		contentPane.add(exit);
+
+		
+	}
+}
+

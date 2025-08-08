@@ -1,0 +1,191 @@
+//執行SQL連線
+					public static Connection conn=DbConnection.getDb();
+
+					//CREATE
+					@Override
+					public void add(BookSchdule bookschdule) {
+						
+									String sql="INSERT INTO bookschdule (patientName,patientId,bookDate,bookTime,doctorName,department) VALUE (?,?,?,?,?,?)";
+									
+									try {
+										PreparedStatement ps=conn.prepareStatement(sql);
+										ps.setString(1,bookschdule.getPatientName());
+										ps.setString(2,bookschdule.getPatientId());
+										ps.setString(3,bookschdule.getBookDate());
+										ps.setString(4,bookschdule.getBookTime());
+										ps.setString(5,bookschdule.getDoctorName());
+										ps.setString(6,bookschdule.getDepartment());
+										ps.executeUpdate();
+										
+									} catch (SQLException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+		
+					}
+					
+					//READ-ALL
+					@Override
+					public List<BookSchdule> selectAll() {
+									
+									String sql="SELECT * FROM bookschdule ";
+									List<BookSchdule> booked=new ArrayList();
+									
+									try {
+										PreparedStatement ps=conn.prepareStatement(sql);
+										ResultSet rs=ps.executeQuery();
+										while(rs.next()) {
+													BookSchdule bs=new BookSchdule();
+													bs.setPatientName(rs.getString("PatientName"));
+													bs.setPatientId(rs.getString("PatientId"));
+													bs.setBookDate(rs.getString("bookDate"));
+													bs.setBookTime(rs.getString("bookTime"));
+													bs.setDoctorName(rs.getString("doctorName"));
+													bs.setDepartment(rs.getString("department"));
+													booked.add(bs);
+										}
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									return booked;
+						}
+
+					
+					//READ-byPID
+					@Override
+					public BookSchdule SelectByPatientid(String patientid) {
+									
+									BookSchdule booked=null;
+									String sql="SELECT * FROM bookschdule WHERE patientId=?";
+									
+									try {
+										PreparedStatement ps=conn.prepareStatement(sql);
+										ps.setString(1, patientid);
+										ResultSet rs=ps.executeQuery();
+										
+										if(rs.next()) {
+												booked=new BookSchdule();
+												booked.setPatientName(rs.getString("PatientName"));
+												booked.setPatientId(rs.getString("PatientId"));
+												booked.setBookDate(rs.getString("bookDate"));
+												booked.setBookTime(rs.getString("bookTime"));
+												booked.setDoctorName(rs.getString("doctorName"));
+												booked.setDepartment(rs.getString("department"));
+
+										}
+										rs.close();
+										ps.close();
+										
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+									return booked;
+					}
+
+					//READ-byID
+					@Override
+					public BookSchdule SelectById(int id) {
+									
+									BookSchdule bs = null;
+									String sql="SELECT * FROM bookschdule WHERE id=?";							
+									
+									try {
+										PreparedStatement ps=conn.prepareStatement(sql);
+										ps.setInt(1,id);
+										ResultSet rs=ps.executeQuery();
+										if(rs.next()) {
+													bs = new BookSchdule();
+													bs.setId(rs.getInt("Id"));
+													bs.setPatientName(rs.getString("PatientName"));
+													bs.setPatientId(rs.getString("PatientId"));
+													bs.setBookDate(rs.getString("bookDate"));
+													bs.setBookTime(rs.getString("bookTime"));
+													bs.setDoctorName(rs.getString("doctorName"));
+													bs.setDepartment(rs.getString("department"));
+													
+										}
+										rs.close();
+										ps.close();
+										
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									return bs;
+						}
+					
+					
+					//UPDATE
+					@Override
+					public void update(BookSchdule bookschdule) {
+						
+									String sql="UPDATE bookschdule set bookDate=?,bookTime=? WHERE patientId=? ";		
+									try {
+										PreparedStatement ps=conn.prepareStatement(sql);
+										ps.setString(1, bookschdule.getBookDate());
+										ps.setString(2, bookschdule.getBookTime());
+										ps.setString(3, bookschdule.getPatientId());
+										ps.executeUpdate();
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+					}
+
+
+					//DELETE
+					@Override
+					public void delete(int id) {
+						
+									String sql="DELETE FROM bookschdule WHERE id=?";
+									
+									try {
+												PreparedStatement ps=conn.prepareStatement(sql);
+												ps.setInt(1,id);
+												ps.executeUpdate();
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+		
+					}
+
+					@Override
+					public List<BookSchdule> SelectMyAllByPatientid(String patientid) {
+						List<BookSchdule> bookedList = new ArrayList<>();
+					    String sql = "SELECT * FROM bookschdule WHERE patientId = ?";
+
+					    try {
+					        PreparedStatement ps = conn.prepareStatement(sql);
+					        ps.setString(1, patientid);
+					        ResultSet rs = ps.executeQuery();
+
+					        while (rs.next()) {
+					            BookSchdule booked = new BookSchdule();
+					            booked.setId(rs.getInt("id"));
+					            booked.setPatientName(rs.getString("PatientName"));
+					            booked.setPatientId(rs.getString("PatientId"));
+					            booked.setBookDate(rs.getString("bookDate"));
+					            booked.setBookTime(rs.getString("bookTime"));
+					            booked.setDoctorName(rs.getString("doctorName"));
+					            booked.setDepartment(rs.getString("department"));
+
+					            bookedList.add(booked);
+					        }
+
+					        rs.close();
+					        ps.close();
+					    } catch (Exception e) {
+					        e.printStackTrace();
+					    }
+
+					    return bookedList;
+					}
+
+
+}
